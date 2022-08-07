@@ -37,10 +37,10 @@ function on_tick()
     wheels.orientation = train.orientation
     local x = wheels.position.x - train.position.x
     local y = wheels.position.y - train.position.y
-    wheels.speed = train.speed + (math.sqrt(x*x + y*y) * 0.2)
-    if math.abs(math.floor(train.position.x) - train.position.x) < 0.01 and math.abs(math.floor(train.position.y) - train.position.y) < 0.01 then
-        wheels.teleport(train.position)
-    end
+    wheels.speed = train.speed-- + (math.sqrt(x*x + y*y) * 0.2)
+    --if math.abs(math.floor(train.position.x) - train.position.x) < 0.01 and math.abs(math.floor(train.position.y) - train.position.y) < 0.01 then
+    wheels.teleport(train.position)
+    --end
     --for train, wheels in pairs (global) do
      --   if (train and wheels and train.valid and wheels.valid) then
             --local offset = {train.orientation * 10 * 3.14 * 2, train.orientation * 10 * 3.14 * 2}

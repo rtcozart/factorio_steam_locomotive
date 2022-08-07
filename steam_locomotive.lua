@@ -51,6 +51,7 @@ local steam_wheels = {
     friction_force = 1e-5,
     energy_per_hit_point = 0,
     allow_passengers = false,
+    flags = {"placeable-off-grid", "not-on-map"},
     energy_source = {
         type = "void",
         emissions_per_minute = 0,
