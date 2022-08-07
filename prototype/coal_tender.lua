@@ -1,8 +1,6 @@
 --coal_tender.lua
 
-local function sprite(name)
-    return '__steamtrain__/graphics/'..name
-end
+local SPRITE_PATH = '__steamtrain__/graphics/coal-tender'
 
 local coalTender = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
 coalTender.name = "coal-tender"
@@ -16,11 +14,11 @@ coalTender.pictures = {
             width = 512,
             height = 512,
             filenames = {
-                sprite("coal-tender/sheet_0.gif"),
-                sprite("coal-tender/sheet_1.gif")
+                SPRITE_PATH.."/sheet_0.gif",
+                SPRITE_PATH.."/sheet_1.gif"
             },
-            scale = 0.45,
-            shift = util.by_pixel(0, -18)
+            scale = 0.475,
+            shift = util.by_pixel(0, -24)
         }
         --todo: generate shadow
     }
@@ -50,7 +48,7 @@ local recipe = {
 local item = {
     type = "item",
     name = "coal-tender-item",
-    icon = sprite("coal-tender/64x64.png"),
+    icon = SPRITE_PATH.."/64x64.png",
     icon_size = 64,
     place_result = "coal-tender",
     stack_size = 5
