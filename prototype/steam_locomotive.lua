@@ -84,6 +84,7 @@ local custom_properties = {
     icon_size = 64,
     pictures = {
         layers = {
+            --base image
             {
                 direction_count = 128,
                 line_length = 8,
@@ -96,7 +97,23 @@ local custom_properties = {
                 },
                 scale = 0.45,
                 shift = util.by_pixel(0, -18)
-            }
+            },
+            --color mask
+            {
+                apply_runtime_tint = true,
+                direction_count = 128,
+                line_length = 8,
+                lines_per_file = 8,
+                width = 512,
+                height = 512,
+                blend_mode = "additive",
+                filenames = {
+                    SPRITE_PATH.."/body/mask_0.gif",
+                    SPRITE_PATH.."/body/mask_1.gif"
+                },
+                scale = 0.45,
+                shift = util.by_pixel(0, -18)
+            },
             --TODO: add shadow layer
         }
     }
