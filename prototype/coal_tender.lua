@@ -18,7 +18,7 @@ coalTender.pictures = {
                 SPRITE_PATH.."/sheet_1.gif"
             },
             scale = 0.46,
-            shift = util.by_pixel(0, -22)
+            shift = util.by_pixel(0, -24)
         }
         --todo: generate shadow
     }

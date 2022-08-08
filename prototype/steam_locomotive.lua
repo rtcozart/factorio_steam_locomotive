@@ -69,7 +69,7 @@ local custom_properties = {
         match_speed_to_activity = true,
         idle_sound = {
             filename = SOUND_PATH.."/idle.ogg",
-            volume = 0.5
+            volume = 0.4
         },
         match_volume_to_activity = true
     },
