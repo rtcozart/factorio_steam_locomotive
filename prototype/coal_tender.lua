@@ -3,7 +3,7 @@
 local SPRITE_PATH = '__steamtrain__/graphics/coal-tender'
 
 local coalTender = table.deepcopy(data.raw["cargo-wagon"]["cargo-wagon"])
-coalTender.name = "coal-tender"
+coalTender.name = "rtc:tender"
 
 coalTender.pictures = {
     layers = {
@@ -17,8 +17,8 @@ coalTender.pictures = {
                 SPRITE_PATH.."/sheet_0.gif",
                 SPRITE_PATH.."/sheet_1.gif"
             },
-            scale = 0.475,
-            shift = util.by_pixel(0, -24)
+            scale = 0.46,
+            shift = util.by_pixel(0, -22)
         }
         --todo: generate shadow
     }
@@ -29,15 +29,15 @@ coalTender.vertical_doors = nil
 
 local recipe = {
     type = "recipe",
-    name = "coal-tender-recipe",
+    name = "rtc:tender-recipe",
     energy_required = 16.5,
     normal = {
         ingredients = {{"iron-plate",20},{"steel-plate",10}},
-        result = "coal-tender-item"
+        result = "rtc:tender-item"
     },
     expensive = {
         ingredients = {{"iron-plate",40},{"steel-plate",20}},
-        result = "coal-tender-item"
+        result = "rtc:tender-item"
     },
     energy_required =  16.5,
     enabled = false,
@@ -47,10 +47,10 @@ local recipe = {
 
 local item = {
     type = "item",
-    name = "coal-tender-item",
+    name = "rtc:tender-item",
     icon = SPRITE_PATH.."/64x64.png",
     icon_size = 64,
-    place_result = "coal-tender",
+    place_result = "rtc:tender",
     stack_size = 5
 }
 

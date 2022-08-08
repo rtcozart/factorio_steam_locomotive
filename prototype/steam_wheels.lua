@@ -3,7 +3,7 @@ local SPRITE_PATH = '__steamtrain__/graphics/steam-locomotive'
 
 --dirty hack
 data:extend({{
-    name = "steam-wheels",
+    name = "rtc:steam-wheels",
     type = "car",
     effectivity = 0,
     consumption = "0kW",
@@ -14,6 +14,7 @@ data:extend({{
     energy_per_hit_point = 0,
     allow_passengers = false,
     flags = {"placeable-off-grid", "not-on-map"},
+    render_layer = "lower-object-above-shadow",
     energy_source = {
         type = "void",
         emissions_per_minute = 0,

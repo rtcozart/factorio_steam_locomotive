@@ -1,52 +1,135 @@
 --steam_locomotive.lua
-local SPRITE_PATH = '__steamtrain__/graphics/steam-locomotive'
+local SPRITE_PATH = "__steamtrain__/graphics/steam-locomotive"
+local SOUND_PATH = "__steamtrain__/sound"
 
---TODO will probably create full prototype instead but this will do for now
+local custom_smoke = table.deepcopy(data.raw["trivial-smoke"]["train-smoke"])
+custom_smoke.name = "rtc:train-smoke"
+custom_smoke.start_scale = 0.2
+custom_smoke.end_scale = 3
+
 local steam_locomotive = table.deepcopy(data.raw["locomotive"]["locomotive"])
-steam_locomotive.name = "steam-locomotive"
+local custom_properties = {
+    name = "rtc:steam-locomotive",
+    type = "locomotive",
+    --max_power = "500kw",
+    --max_speed = 1,
+    weight = 5000,
+    --braking_force = 3,
+    --friction_force = 0.5,
+    --energy_per_hit_point = 5,
+    --reversing_power_modifier = 0.5,
+    --air_resistance = 0.01,
+    --joint_distance = 4,
+    --connection_distance = 3,
+    --vertical_selection_shift = -0.796875,
+    energy_source = {
+        type = "burner",
+        emissions_per_minute = 10,
+        render_no_power_icon = true,
+        render_no_network_icon = false,
+        fuel_inventory_size = 1,
+        fuel_category = "chemical",
+        smoke = {
+          {
+            --duration = 1,
 
-steam_locomotive.pictures = {
-    layers = {
-        {
-            direction_count = 128,
-            line_length = 8,
-            lines_per_file = 8,
-            width = 512,
-            height = 512,
-            filenames = {
-                SPRITE_PATH.."/body/sheet_0.gif",
-                SPRITE_PATH.."/body/sheet_1.gif"
+            frequency = 50,
+            name = "rtc:train-smoke",
+            north_position = {
+              0,
+              -3
             },
-            scale = 0.45,
-            shift = util.by_pixel(0, -18)
-        }--,
-        --{
-        --    direction_count = 128,
-        --    filename = SPRITE_PATH.."steam-locomotive/shadow.png"),
-        --    draw_as_shadow = true,
-        --    line_length = 8,
-        --    lines_per_file = 8,
-        --    height = 512,
-        --    width = 512,
-        --    scale = 0.6,
-        --    shift = util.by_pixel(0, 5)
-        --}
+            south_position = {
+              0,
+              0
+            },
+            east_position = {
+              2.4,
+              -2
+            },
+            west_position = {
+              -2.4,
+              -2
+            },
+            starting_frame_deviation = 10,
+            deviation = {
+                0.05,
+                0.1
+            },
+            starting_vertical_speed = 0.15,
+            starting_vertical_speed_deviation = 0.1,
+          }
+        },
+    },
+    working_sound = {
+        sound = {
+            filename = SOUND_PATH.."/steam-engine-45bpm.ogg",
+            volume = 0.6
+        },
+        match_speed_to_activity = true,
+        idle_sound = {
+            filename = SOUND_PATH.."/idle.ogg",
+            volume = 0.5
+        },
+        match_volume_to_activity = true
+    },
+    sound_scaling_ratio = 0.6,
+    sound_minimum_speed = 0.2;
+    flags = {
+        "placeable-neutral",
+        "player-creation",
+        "placeable-off-grid"
+    },
+    icon = SPRITE_PATH.."/64x64.png",
+    icon_size = 64,
+    pictures = {
+        layers = {
+            {
+                direction_count = 128,
+                line_length = 8,
+                lines_per_file = 8,
+                width = 512,
+                height = 512,
+                filenames = {
+                    SPRITE_PATH.."/body/sheet_0.gif",
+                    SPRITE_PATH.."/body/sheet_1.gif"
+                },
+                scale = 0.45,
+                shift = util.by_pixel(0, -18)
+            }
+            --TODO: add shadow layer
+        }
     }
+
+--[[
+    drive_over_tie_trigger = {
+        {
+            type = "create-trivial-smoke",
+            smoke_name = "smoke-fast"
+        }
+    }
+        tie_distance = 12
+    ]]
 }
+
+for k,v in pairs(custom_properties) do
+    steam_locomotive[k] = v
+end
 
 steam_locomotive.wheels = nil
 
+
 local recipe = {
     type = "recipe",
-    name = "steam-locomotive-recipe",
+    name = "rtc:steam-locomotive-recipe",
     energy_required = 16.5,
     normal = {
         ingredients = {{"steam-engine",1},{"steel-plate",10}},
-        result = "steam-locomotive-item"
+        result = "rtc:steam-locomotive-item"
     },
     expensive = {
         ingredients = {{"boiler",1},{"steam-engine",1},{"steel-plate",15}},
-        result = "steam-locomotive-item"
+        result = "rtc:steam-locomotive-item"
     },
     energy_required =  16.5,
     enabled = false,
@@ -57,13 +140,13 @@ local recipe = {
 
 local item = {
     type = "item",
-    name = "steam-locomotive-item",
+    name = "rtc:steam-locomotive-item",
     icon = SPRITE_PATH.."/64x64.png",
     icon_size = 64,
     --subgroup = "logistics",
     --order = "z",
-    place_result = "steam-locomotive",
+    place_result = "rtc:steam-locomotive",
     stack_size = 5
 }
 
-data:extend{steam_locomotive, item, recipe};
+data:extend{custom_smoke, steam_locomotive, item, recipe};
