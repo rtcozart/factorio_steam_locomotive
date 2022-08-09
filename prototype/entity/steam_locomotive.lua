@@ -31,7 +31,7 @@ local custom_properties = {
     },
     --max_power =
     --max_speed =
-    weight = 5000,
+    weight = 3000,
     --braking_force = 3,
     --friction_force = 0.5,
     --energy_per_hit_point = 5,
@@ -46,7 +46,7 @@ local custom_properties = {
         render_no_power_icon = true,
         render_no_network_icon = false,
         fuel_inventory_size = 1,
-        fuel_category = "chemical",
+        fuel_category = "rtc:water",
         smoke = {
           {
             --duration = 1,

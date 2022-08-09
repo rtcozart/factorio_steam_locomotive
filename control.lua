@@ -72,17 +72,26 @@ function get_train_by_key(key, obj)
 end
 
 function on_start()
-    for _, v in pairs(game.surfaces["nauvis"].find_entities_filtered({name="rtc:steam-locomotive-placement-entity"})) do
-        v.destroy()
+    for _, surface in pairs(game.surfaces) do
+        for _, v in pairs(surface.find_entities_filtered({name="rtc:steam-locomotive-placement-entity"})) do
+            v.destroy()
+        end
+        for _, v in pairs(surface.find_entities_filtered({name="rtc:steam-wheels"})) do
+            v.destroy()
+        end
+        for _, v in pairs(surface.find_entities_filtered({name="rtc:steam-locomotive"})) do
+            apply_wheels(v)
+        end
     end
-    for _, v in pairs(game.surfaces["nauvis"].find_entities_filtered({name="rtc:steam-wheels"})) do
-        v.destroy()
-    end
-    for _, v in pairs(game.surfaces["nauvis"].find_entities_filtered({name="rtc:steam-locomotive"})) do
-        apply_wheels(v)
-    end
+end
+
+function on_init()
+    remote.call("fluidTrains_hook", "addLocomotive", "rtc:steam-locomotive", 1500)
+    remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
 end
 
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_built_entity, on_build)
 script.on_event(defines.events.on_robot_built_entity, on_build)
+script.on_init(on_init)
+script.on_configuration_changed(on_init)
