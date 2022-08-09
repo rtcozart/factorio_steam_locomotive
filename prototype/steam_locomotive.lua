@@ -176,7 +176,7 @@ table.insert(steam_locomotive.stop_trigger, {
     type = "play-sound",
     sound = {
         filename = SOUND_PATH.."/steam.ogg",
-        volume = 0.25
+        volume = 0.2
     }
 })
 
