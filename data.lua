@@ -1,5 +1,7 @@
 --data.lua
 
-require("prototype/steam_locomotive")
-require("prototype/steam_wheels")
-require("prototype/coal_tender")
+require("prototype/entity/steam_locomotive")
+require("prototype/entity/steam_wheels")
+require("prototype/entity/coal_tender")
+
+require("prototype/technology/steam_locomotion")
