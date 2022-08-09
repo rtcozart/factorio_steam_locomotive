@@ -19,8 +19,21 @@ coalTender.pictures = {
             },
             scale = 0.46,
             shift = util.by_pixel(0, -24)
+        },
+        {
+            direction_count = 128,
+            draw_as_shadow = true,
+            line_length = 8,
+            lines_per_file = 8,
+            width = 512,
+            height = 512,
+            filenames = {
+                SPRITE_PATH.."/shadow_0.gif",
+                SPRITE_PATH.."/shadow_1.gif"
+            },
+            scale = 0.46,
+            shift = util.by_pixel(10, -20)
         }
-        --todo: generate shadow
     }
 }
 
@@ -49,6 +62,7 @@ local item = {
     type = "item",
     name = "rtc:tender-item",
     icon = SPRITE_PATH.."/64x64.png",
+    subgroup = "train-transport",
     icon_size = 64,
     place_result = "rtc:tender",
     stack_size = 5

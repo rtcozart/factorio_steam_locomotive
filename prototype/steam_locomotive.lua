@@ -7,12 +7,30 @@ custom_smoke.name = "rtc:train-smoke"
 custom_smoke.start_scale = 0.2
 custom_smoke.end_scale = 3
 
+local placement_entity = table.deepcopy(data.raw["locomotive"]["locomotive"])
+placement_entity.name = "rtc:steam-locomotive-placement-entity"
+placement_entity.wheels = nil
+placement_entity.pictures = {
+    direction_count = 64,
+    line_length = 8,
+    lines_per_file = 8,
+    width = 512,
+    height = 512,
+    filename = SPRITE_PATH.."/placement_entity.gif",
+    scale = 0.45,
+    shift = util.by_pixel(0, -18)
+}
+
 local steam_locomotive = table.deepcopy(data.raw["locomotive"]["locomotive"])
 local custom_properties = {
     name = "rtc:steam-locomotive",
     type = "locomotive",
-    --max_power = "500kw",
-    --max_speed = 1,
+    placeable_by = {
+        item = "rtc:steam-locomotive-item",
+        count = 1
+    },
+    --max_power =
+    --max_speed =
     weight = 5000,
     --braking_force = 3,
     --friction_force = 0.5,
@@ -114,20 +132,53 @@ local custom_properties = {
                 scale = 0.45,
                 shift = util.by_pixel(0, -18)
             },
-            --TODO: add shadow layer
-        }
-    }
+            --shadow
+            {
+                draw_as_shadow = true,
+                direction_count = 128,
+                line_length = 8,
+                lines_per_file = 8,
+                width = 512,
+                height = 512,
+                filenames = {
+                    SPRITE_PATH.."/shadow_0.gif",
+                    SPRITE_PATH.."/shadow_1.gif"
+                },
+                scale = 0.5,
+                shift = util.by_pixel(35, 30)
+            },
 
---[[
+        }
+    },
+    minable = {
+        mining_time = 1,
+        result = "rtc:steam-locomotive-item"
+    },
+    --[[
     drive_over_tie_trigger = {
         {
             type = "create-trivial-smoke",
-            smoke_name = "smoke-fast"
+            smoke_name = "turbine-smoke",
+            starting_frame_deviation = 30,
+            offset_deviation = {{-0.5,0.5},{-1,0.1}}
         }
-    }
-        tie_distance = 12
-    ]]
+    },
+    tie_distance = 3
+    --]]
 }
+
+table.insert(steam_locomotive.stop_trigger, {
+    type = "create-trivial-smoke",
+    smoke_name = "turbine-smoke"
+})
+
+table.insert(steam_locomotive.stop_trigger, {
+    type = "play-sound",
+    sound = {
+        filename = SOUND_PATH.."/steam.ogg",
+        volume = 0.25
+    }
+})
 
 for k,v in pairs(custom_properties) do
     steam_locomotive[k] = v
@@ -160,10 +211,9 @@ local item = {
     name = "rtc:steam-locomotive-item",
     icon = SPRITE_PATH.."/64x64.png",
     icon_size = 64,
-    --subgroup = "logistics",
-    --order = "z",
-    place_result = "rtc:steam-locomotive",
+    subgroup = "train-transport",
+    place_result = "rtc:steam-locomotive-placement-entity",
     stack_size = 5
 }
 
-data:extend{custom_smoke, steam_locomotive, item, recipe};
+data:extend{custom_smoke, steam_locomotive, placement_entity, item, recipe};

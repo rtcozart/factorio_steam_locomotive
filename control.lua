@@ -1,4 +1,4 @@
-trains = nil
+local trains = nil
 
 function apply_wheels(train)
     local wheels = train.surface.create_entity({
@@ -11,7 +11,9 @@ function apply_wheels(train)
 end
 
 function on_tick(tick_name, tick_number)
+    --TODO: implement without a check every tick
     if not trains then
+        trains = {}
         on_start()
     end
     for i, v in pairs(trains) do
@@ -24,7 +26,7 @@ function on_tick(tick_name, tick_number)
             end
         end
 
-        --TODO: handle wheels and not train cond?
+        --TODO: handle condition where wheels exist but not train?
     end
 end
 
@@ -42,8 +44,21 @@ function update_wheel_position(train, wheels)
 end
 
 function on_build(event)
-    if (event.created_entity.name == 'rtc:steam-locomotive') then
-        apply_wheels(event.created_entity)
+    --if (event.created_entity.name == 'rtc:steam-locomotive') then
+    --    apply_wheels(event.created_entity)
+    --end
+    if (event.created_entity.name == 'rtc:steam-locomotive-placement-entity') then
+        local position = event.created_entity.position
+        local orientation = event.created_entity.orientation
+        local surface = event.created_entity.surface
+        event.created_entity.destroy()
+        local train = surface.create_entity({
+            name = "rtc:steam-locomotive",
+            position = position,
+            orientation = orientation,
+            force = game.forces.neutral
+        })
+        apply_wheels(train)
     end
 end
 
@@ -57,7 +72,9 @@ function get_train_by_key(key, obj)
 end
 
 function on_start()
-    trains = {}
+    for _, v in pairs(game.surfaces["nauvis"].find_entities_filtered({name="rtc:steam-locomotive-placement-entity"})) do
+        v.destroy()
+    end
     for _, v in pairs(game.surfaces["nauvis"].find_entities_filtered({name="rtc:steam-wheels"})) do
         v.destroy()
     end
@@ -68,3 +85,4 @@ end
 
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_built_entity, on_build)
+script.on_event(defines.events.on_robot_built_entity, on_build)
