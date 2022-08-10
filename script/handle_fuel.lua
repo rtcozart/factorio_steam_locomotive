@@ -42,19 +42,21 @@ function find_tender(locomotive)
 	end
 end
 
+--[[
 function get_energy_from_fuel(tender)
     if not tender then return 0 end
     for _, fuel_name in pairs(FUEL_PRIORITY) do
-        if tender.get_inventory(defines.inventory.cargo_wagon).get_item_count(fuel_name) > 0 then
+        if tender.burner.get_item_count(fuel_name) > 0 then
             tender.remove_item({name = fuel_name, count = 1})
             return 100 --TODO: return energy of consumed fuel
         end
     end
     return 0
 end
-
+]]
 
 function public:consume_energy(v)
+--[[
     --TODO: get energy of rtc:hot-water entity
     local water_energy = 400
     local water_amount = v.locomotive.burner.inventory.get_item_count()
@@ -71,6 +73,7 @@ function public:consume_energy(v)
     end
     v.boiler.last_water_amount = water_amount
     v.boiler.remaining_energy = current_energy
+    ]]
 end
 
 return public
