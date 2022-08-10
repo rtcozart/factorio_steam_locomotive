@@ -56,7 +56,6 @@ function on_build(event)
             locomotive = locomotive,
             wheels = wheels,
             boiler = {
-                remaining_energy = 0,
                 last_water_amount = 0
             }
         })
@@ -77,7 +76,6 @@ function on_start()
                 locomotive = locomotive,
                 wheels = wheels,
                 boiler = {
-                    remaining_energy = 1000, --TODO: get partially burned fuel? impossible?
                     last_water_amount = locomotive.burner.inventory.get_item_count()
                 }
             })

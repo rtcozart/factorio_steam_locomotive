@@ -1,5 +1,3 @@
-local FUEL_PRIORITY = {"nuclear-fuel","rocket-fuel","solid-fuel","coal","wood"}
-
 local public = {}
 
 function find_tender(locomotive)
@@ -42,38 +40,35 @@ function find_tender(locomotive)
 	end
 end
 
---[[
-function get_energy_from_fuel(tender)
-    if not tender then return 0 end
-    for _, fuel_name in pairs(FUEL_PRIORITY) do
-        if tender.burner.get_item_count(fuel_name) > 0 then
-            tender.remove_item({name = fuel_name, count = 1})
-            return 100 --TODO: return energy of consumed fuel
-        end
-    end
-    return 0
-end
-]]
 
 function public:consume_energy(v)
---[[
-    --TODO: get energy of rtc:hot-water entity
-    local water_energy = 400
-    local water_amount = v.locomotive.burner.inventory.get_item_count()
-    local consumed_energy = (v.boiler.last_water_amount - water_amount) * water_energy
-    local current_energy = v.boiler.remaining_energy - consumed_energy
-    if current_energy <= 0 then
-        local tender = find_tender(v.locomotive)
-        current_energy = get_energy_from_fuel(tender)
-        if (current_energy <= 0) then
-            game.print("Out of fuel!")
-            --stop the train
-            --show out of fuel symbol on the tender
+    local tender = find_tender(v.locomotive)
+
+    local cold_water_count = v.locomotive.burner.inventory.get_item_count("rtc:cold-water")
+    local hot_water_count = v.locomotive.burner.inventory.get_item_count("rtc:hot-water")
+    --game.print("Cold "..cold_water_count..", Hot "..hot_water_count)
+
+    if cold_water_count > 0 then
+        if not tender then return end
+        if tender.burner.inventory.get_item_count() > 0 or tender.burner.remaining_burning_fuel > 0 then
+            local removed_count = v.locomotive.burner.inventory.remove({name = "rtc:cold-water", count = cold_water_count})
+            v.locomotive.burner.inventory.insert({name = "rtc:hot-water", count = removed_count})
+            v.locomotive.burner.remaining_burning_fuel = 0
+            return
         end
     end
-    v.boiler.last_water_amount = water_amount
-    v.boiler.remaining_energy = current_energy
-    ]]
+    if hot_water_count > 0 then
+        if not tender or (tender.burner.inventory.get_item_count() == 0 and tender.burner.remaining_burning_fuel == 0) then
+            local removed_count = v.locomotive.burner.inventory.remove({name = "rtc:hot-water", count = hot_water_count})
+            game.print("Removed "..removed_count)
+            v.locomotive.burner.inventory.insert({name = "rtc:cold-water", count = removed_count})
+            return
+        end
+    end
+end
+
+function ass(bool)
+    return bool and "true" or "false"
 end
 
 return public
