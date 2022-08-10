@@ -39,6 +39,7 @@ coalTender.pictures = {
 
 coalTender.horizontal_doors = nil
 coalTender.vertical_doors = nil
+coalTender.inventory_size = 5
 
 local recipe = {
     type = "recipe",

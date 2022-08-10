@@ -1,74 +1,66 @@
-local trains = nil
+require("script/handle_fluid.lua")
 
-function apply_wheels(train)
-    local wheels = train.surface.create_entity({
-        name = "rtc:steam-wheels",
-        position = train.position,
-        orientation = train.orientation,
-        force = game.forces.neutral
-    })
-    table.insert(trains, {train = train, wheels = wheels})
-end
+local WheelControl = require("script/handle_wheels.lua")
+local FuelControl = require("script/handle_fuel.lua")
 
-function on_tick(tick_name, tick_number)
-    --TODO: implement without a check every tick
-    if not trains then
-        trains = {}
+local locomotives = nil
+
+function on_tick(event)
+    --TODO: implement without a check every tick?
+    if not locomotives then
+        locomotives = {}
         on_start()
     end
-    for i, v in pairs(trains) do
-        update_wheel_position(v.train, v.wheels)
+    for i, v in pairs(locomotives) do
+        if is_locomotive_valid(i, v) then
+            WheelControl:update_wheel_position(v.locomotive, v.wheels)
+        end
+    end
 
-        if not v.train or not v.train.valid then
-            table.remove(trains, i)
-            if v.wheels then
-                v.wheels.destroy()
+    if event.tick % 60 == 0 then
+        for i, v in pairs(locomotives) do
+            if is_locomotive_valid(i, v) then
+                FuelControl:consume_energy(v)
             end
         end
-
-        --TODO: handle condition where wheels exist but not train?
     end
 end
 
-function update_wheel_position(train, wheels)
-    --TODO: the train sprite sometimes wobbles. can this be read?
-    if not train or not train.valid or not wheels or not wheels.valid then return end
-    wheels.orientation = train.orientation
-    --position is slightly off when vertical, noticeable at 45 degrees
-    local angle = math.pi*2*train.orientation
-    local sin = math.sin(angle)
-    local cos = math.cos(angle)
-    local offset = { x = sin*math.abs(cos)*-0.2, y = cos*0.15 }
-    wheels.speed = train.speed
-    wheels.teleport({x = train.position.x + offset.x, y = train.position.y + offset.y})
+function is_locomotive_valid(i, v)
+    --TODO: handle possible condition where wheels exist but not locomotive?
+    if not v.locomotive or not v.locomotive.valid then
+        table.remove(locomotives, i)
+        if v.wheels then
+            v.wheels.destroy()
+        end
+        return false
+    else
+        return true
+    end
 end
 
 function on_build(event)
-    --if (event.created_entity.name == 'rtc:steam-locomotive') then
-    --    apply_wheels(event.created_entity)
-    --end
     if (event.created_entity.name == 'rtc:steam-locomotive-placement-entity') then
         local position = event.created_entity.position
         local orientation = event.created_entity.orientation
         local surface = event.created_entity.surface
         event.created_entity.destroy()
-        local train = surface.create_entity({
+        local locomotive = surface.create_entity({
             name = "rtc:steam-locomotive",
             position = position,
             orientation = orientation,
             force = game.forces.neutral
         })
-        apply_wheels(train)
+        local wheels = WheelControl:apply_wheels(locomotive)
+        table.insert(locomotives, {
+            locomotive = locomotive,
+            wheels = wheels,
+            boiler = {
+                remaining_energy = 0,
+                last_water_amount = 0
+            }
+        })
     end
-end
-
-function get_train_by_key(key, obj)
-    for _, v in pairs(trains) do
-        if obj == v[key] then
-            return v
-        end
-    end
-    return nil
 end
 
 function on_start()
@@ -79,19 +71,33 @@ function on_start()
         for _, v in pairs(surface.find_entities_filtered({name="rtc:steam-wheels"})) do
             v.destroy()
         end
-        for _, v in pairs(surface.find_entities_filtered({name="rtc:steam-locomotive"})) do
-            apply_wheels(v)
+        for _, locomotive in pairs(surface.find_entities_filtered({name="rtc:steam-locomotive"})) do
+            local wheels = WheelControl:apply_wheels(locomotive)
+            table.insert(locomotives, {
+                locomotive = locomotive,
+                wheels = wheels,
+                boiler = {
+                    remaining_energy = 1000, --TODO: get partially burned fuel? impossible?
+                    last_water_amount = locomotive.burner.inventory.get_item_count()
+                }
+            })
         end
     end
 end
 
-function on_init()
-    remote.call("fluidTrains_hook", "addLocomotive", "rtc:steam-locomotive", 1500)
-    remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
+--[[
+not used?
+function get_locomotive_by_key(key, obj)
+    for _, v in pairs(locomotives) do
+        if obj == v[key] then
+            return v
+        end
+    end
+    return nil
 end
+]]
+
 
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_built_entity, on_build)
 script.on_event(defines.events.on_robot_built_entity, on_build)
-script.on_init(on_init)
-script.on_configuration_changed(on_init)

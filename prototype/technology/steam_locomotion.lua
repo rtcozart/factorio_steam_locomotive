@@ -14,7 +14,7 @@ data:extend({
                 recipe = "rtc:tender-recipe"
             }
         },
-        prerequisites = {"railway"},
+        prerequisites = {"fluid-handling","railway"},
         unit = {
             count = 50,
             ingredients = {

@@ -22,12 +22,15 @@ data:extend({{
 
 data:extend({{
     type = "recipe",
-    name = "rtc:water-recipe",
-    energy_required = 0.1,
+    name = "fuckass",
+    enabled = true,
+    energy_required = 16.5,
     normal = {
         enabled = true,
-        ingredients = {{"coal",1}},
+        ingredients = {{"wood", 1}},
         result = "rtc:hot-water"
     },
-    expensive = nil
+    expensive = nil,
+    energy_required =  0.1,
+    show_amount_in_title = false
 }})
