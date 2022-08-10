@@ -10,6 +10,16 @@ function find_tender(locomotive)
 	else
 		known_trains[locomotive.unit_number] = nil
 	end
+
+	local function find(table, loco)
+		for i, v in pairs(table) do
+			if v.unit_number == loco.unit_number then
+				return true
+			end
+		end
+		return false
+	end
+
 	--TODO: More optimal method?
 	for _, surface in pairs(game.surfaces) do
 		for _, t in pairs(surface.get_trains()) do
@@ -17,32 +27,29 @@ function find_tender(locomotive)
 				if carriage.unit_number and carriage.unit_number == locomotive.unit_number then
 					local saved_train = {}
 					saved_train.train = t
-
-					for _,l in pairs(t.locomotives["front_movers"]) do
-						if l.unit_number == locomotive.unit_number then
-							isFrontMover = true
+					if find(t.locomotives["front_movers"], locomotive) then
+						local tender = t.carriages[i+1]
+						if tender and tender.prototype.name == "rtc:tender" and find(t.locomotives["front_movers"], tender) then
+							saved_train.tender = tender
+							known_trains[locomotive.unit_number] = saved_train
+							return tender
+						end
+					else
+						local tender = t.carriages[i-1]
+						if tender and tender.prototype.name == "rtc:tender" and find(t.locomotives["back_movers"], tender) then
+							saved_train.tender = tender
+							known_trains[locomotive.unit_number] = saved_train
+							return tender
 						end
 					end
-
-					local seekDirection = isFrontMover and 1 or -1
-
-					local next = i + seekDirection
-					if #t.carriages < next or next < 1 then return nil end
-					if t.carriages[next].prototype.name == "rtc:tender" then
-						local tender = t.carriages[next]
-						saved_train.tender = tender
-						known_trains[locomotive.unit_number] = saved_train
-						return tender
-					else
-						return nil
-					end
+					return nil
 				end
 			end
 		end
     end
 end
 
-
+--TODO: If a locomotive runs out of water, the tender will keep burning fuel
 function public:consume_energy(v)
 	local tender = find_tender(v.locomotive)
 
@@ -74,6 +81,12 @@ function public:consume_energy(v)
 			v.locomotive.burner.inventory.insert({name = "rtc:cold-water", count = removed_count})
 			return
 		end
+	end
+
+	if hot_water_count == 0 and cold_water_count == 0 v.locomotive.burner.remaining_burning_fuel == 0 then
+		-- I don't think this will cause any errors...
+		local train = known_trains[v.locomotive.unit_number].train
+		train.manual_mode = true
 	end
 end
 
