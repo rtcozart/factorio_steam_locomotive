@@ -2,6 +2,14 @@ local public = {}
 
 local known_trains = {}
 
+--TODO: make extendable?
+local FUEL_MAP = {}
+FUEL_MAP["coal"] = "rtc:hot-water"
+FUEL_MAP["wood"] = "rtc:hot-water"
+FUEL_MAP["solid-fuel"] = "rtc:hot-water1"
+FUEL_MAP["rocket-fuel"] = "rtc:hot-water2"
+FUEL_MAP["nuclear-fuel"] = "rtc:hot-water3"
+
 function find_tender(locomotive)
 	--attempt to get from known trains first
 	local candidate = known_trains[locomotive.unit_number]
@@ -52,38 +60,38 @@ end
 --TODO: If a locomotive runs out of water, the tender will keep burning fuel
 function public:consume_energy(v)
 	local tender = find_tender(v.locomotive)
-
-	local cold_water_count = v.locomotive.burner.inventory.get_item_count("rtc:cold-water")
-	local hot_water_count = v.locomotive.burner.inventory.get_item_count("rtc:hot-water")
-
-	if cold_water_count > 0 then
-		rendering.draw_sprite({
-			sprite = "rtc:sprite-cold",
-			target = v.locomotive,
-			surface = v.locomotive.surface,
-			render_layer = "entity-info-icon",
-			time_to_live = 30,
-			x_scale = 0.25,
-			y_scale = 0.25,
-			target_offset = {0, -0.6}
-		})
-		if not tender then return end
-		if tender.burner.inventory.get_item_count() > 0 or tender.burner.remaining_burning_fuel > 0 then
-			local removed_count = v.locomotive.burner.inventory.remove({name = "rtc:cold-water", count = cold_water_count})
-			v.locomotive.burner.inventory.insert({name = "rtc:hot-water", count = removed_count})
-			v.locomotive.burner.remaining_burning_fuel = 0
-			return
+	local current_water_count = v.locomotive.burner.inventory.get_item_count()
+	if current_water_count > 0 then
+		local new_water_type
+		if tender.burner.currently_burning then
+			new_water_type = FUEL_MAP[tender.burner.currently_burning.name]
+			if new_water_type == nil then
+				--modded fuels
+				--TODO: find better implementation
+				new_water_type = "rtc:hot-water"
+			end
+		else
+			new_water_type = "rtc:cold-water"
 		end
-	end
-	if hot_water_count > 0 then
-		if not tender or (tender.burner.inventory.get_item_count() == 0 and tender.burner.remaining_burning_fuel == 0) then
-			local removed_count = v.locomotive.burner.inventory.remove({name = "rtc:hot-water", count = hot_water_count})
-			v.locomotive.burner.inventory.insert({name = "rtc:cold-water", count = removed_count})
-			return
+		if new_water_type ~= v.locomotive.burner.currently_burning.name then
+			v.locomotive.burner.inventory.clear()
+			v.locomotive.burner.inventory.insert({name = new_water_type, count = current_water_count})
 		end
-	end
 
-	if hot_water_count == 0 and cold_water_count == 0 v.locomotive.burner.remaining_burning_fuel == 0 then
+		local cold_water_count = v.locomotive.burner.inventory.get_item_count("rtc:cold-water")
+		if cold_water_count > 0 then
+			rendering.draw_sprite({
+				sprite = "rtc:sprite-cold",
+				target = v.locomotive,
+				surface = v.locomotive.surface,
+				render_layer = "entity-info-icon",
+				time_to_live = 30,
+				x_scale = 0.25,
+				y_scale = 0.25,
+				target_offset = {0, -0.6}
+			})
+		end
+	elseif v.locomotive.burner.remaining_burning_fuel == 0 then
 		-- I don't think this will cause any errors...
 		local train = known_trains[v.locomotive.unit_number].train
 		train.manual_mode = true
