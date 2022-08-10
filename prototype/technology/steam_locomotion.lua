@@ -1,8 +1,9 @@
+require("constants")
 data:extend({
 	{
 		type = "technology",
 		name = "rtc:steam-locomotion-technology",
-		icon = '__steamtrain__/graphics/steam-locomotive/512x512.png',
+		icon = SPRITE_PATH.."steam-locomotive/512x512.png",
 		icon_size = 512,
 		effects = {
 			{

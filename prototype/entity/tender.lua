@@ -1,6 +1,4 @@
---tender.lua
-
-local SPRITE_PATH = '__steamtrain__/graphics/coal-tender'
+require("constants")
 
 local tender = table.deepcopy(data.raw["locomotive"]["locomotive"])
 local custom_properties = {
@@ -18,7 +16,7 @@ local custom_properties = {
 		fuel_category = "chemical",
 		smoke = nil
 	},
-	icon = SPRITE_PATH.."/64x64.png",
+	icon = SPRITE_PATH.."tender/64x64.png",
 	icon_size = 64,
 	pictures = {
 		layers = {
@@ -29,8 +27,8 @@ local custom_properties = {
 				width = 512,
 				height = 512,
 				filenames = {
-					SPRITE_PATH.."/sheet_0.gif",
-					SPRITE_PATH.."/sheet_1.gif"
+					SPRITE_PATH.."tender/sheet_0.gif",
+					SPRITE_PATH.."tender/sheet_1.gif"
 				},
 				scale = 0.46,
 				shift = util.by_pixel(0, -24)
@@ -43,8 +41,8 @@ local custom_properties = {
 				width = 512,
 				height = 512,
 				filenames = {
-					SPRITE_PATH.."/shadow_0.gif",
-					SPRITE_PATH.."/shadow_1.gif"
+					SPRITE_PATH.."tender/shadow_0.gif",
+					SPRITE_PATH.."tender/shadow_1.gif"
 				},
 				scale = 0.46,
 				shift = util.by_pixel(10, -20)
@@ -57,33 +55,4 @@ for k,v in pairs(custom_properties) do
 	tender[k] = v
 end
 
-local recipe = {
-	type = "recipe",
-	name = "rtc:tender-recipe",
-	energy_required = 16.5,
-	normal = {
-		enabled = false,
-		ingredients = {{"iron-plate",20},{"steel-plate",10}},
-		result = "rtc:tender-item"
-	},
-	expensive = {
-		enabled = false,
-		ingredients = {{"iron-plate",40},{"steel-plate",20}},
-		result = "rtc:tender-item"
-	},
-	energy_required =  16.5,
-	enabled = false,
-	show_amount_in_title = false
-}
-
-local item = {
-	type = "item",
-	name = "rtc:tender-item",
-	icon = SPRITE_PATH.."/64x64.png",
-	subgroup = "train-transport",
-	icon_size = 64,
-	place_result = "rtc:tender",
-	stack_size = 5
-}
-
-data:extend{tender, item, recipe};
+data:extend({tender})

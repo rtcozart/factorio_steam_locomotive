@@ -1,7 +1,5 @@
---steam_wheels.lua
-local SPRITE_PATH = '__steamtrain__/graphics/steam-locomotive'
+require("constants")
 
---dirty hack
 data:extend({{
 	name = "rtc:steam-wheels",
 	type = "car",
@@ -34,67 +32,67 @@ data:extend({{
 		shift = util.by_pixel(0, -18),
 		stripes = {
 			{
-				filename = SPRITE_PATH.."/wheels/sheet_0.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_0.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_1.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_1.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_2.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_2.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_3.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_3.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_4.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_4.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_5.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_5.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_6.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_6.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_7.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_7.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_8.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_8.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_9.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_9.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_10.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_10.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_11.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_11.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_12.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_12.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_13.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_13.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_14.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_14.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			},{
-				filename = SPRITE_PATH.."/wheels/sheet_15.gif",
+				filename = SPRITE_PATH.."steam-locomotive/wheels/sheet_15.gif",
 				height_in_frames = 8,
 				width_in_frames = 8
 			}
