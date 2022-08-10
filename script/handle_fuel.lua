@@ -73,9 +73,10 @@ function public:consume_energy(v)
 		else
 			new_water_type = "rtc:cold-water"
 		end
-		if new_water_type ~= v.locomotive.burner.currently_burning.name then
+		if new_water_type ~= (v.locomotive.burner.currently_burning and v.locomotive.burner.currently_burning.name) then
 			v.locomotive.burner.inventory.clear()
 			v.locomotive.burner.inventory.insert({name = new_water_type, count = current_water_count})
+			v.locomotive.burner.remaining_burning_fuel = 0
 		end
 
 		local cold_water_count = v.locomotive.burner.inventory.get_item_count("rtc:cold-water")

@@ -1,4 +1,4 @@
-local fluid = data.raw["fluid"]["water"]
+local fluid = data.raw["fluid"]["steam"]
 
 data:extend({{
 	type = "item",
@@ -6,7 +6,7 @@ data:extend({{
 	icon_size = fluid.icon_size,
 	icon_mipmaps = fluid.icon_mipmaps,
 	icons = fluid.icons,
-	stack_size = 1500,
+	stack_size = 3000,
 	fuel_category = "rtc:water",
 	flags = {"hidden","hide-from-fuel-tooltip"},
 	name = "rtc:hot-water",
@@ -22,7 +22,7 @@ data:extend({{
 	icon_size = fluid.icon_size,
 	icon_mipmaps = fluid.icon_mipmaps,
 	icons = fluid.icons,
-	stack_size = 1500,
+	stack_size = 3000,
 	fuel_category = "rtc:water",
 	flags = {"hidden","hide-from-fuel-tooltip"},
 	name = "rtc:hot-water1",
@@ -37,7 +37,7 @@ data:extend({{
 	icon_size = fluid.icon_size,
 	icon_mipmaps = fluid.icon_mipmaps,
 	icons = fluid.icons,
-	stack_size = 1500,
+	stack_size = 3000,
 	fuel_category = "rtc:water",
 	flags = {"hidden","hide-from-fuel-tooltip"},
 	name = "rtc:hot-water2",
@@ -52,7 +52,7 @@ data:extend({{
 	icon_size = fluid.icon_size,
 	icon_mipmaps = fluid.icon_mipmaps,
 	icons = fluid.icons,
-	stack_size = 1500,
+	stack_size = 3000,
 	fuel_category = "rtc:water",
 	flags = {"hidden","hide-from-fuel-tooltip"},
 	name = "rtc:hot-water3",
