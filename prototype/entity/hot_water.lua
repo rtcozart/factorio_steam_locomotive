@@ -1,6 +1,8 @@
+local SPRITE_PATH = "__steamtrain__/graphics"
+
 data:extend({{
-    type = "fuel-category",
-    name = "rtc:water"
+	type = "fuel-category",
+	name = "rtc:water"
 }})
 
 local fluid = data.raw["fluid"]["water"]
@@ -33,4 +35,12 @@ data:extend({{
 	fuel_value = "100GJ",
 	fuel_acceleration_multiplier = 0.0,
 	fuel_top_speed_multiplier = 0.0
+}})
+
+data:extend({{
+	type = "sprite",
+	name = "rtc:sprite-cold",
+	width = 128,
+	height = 128,
+	filename = SPRITE_PATH.."/icon-cold.png"
 }})
