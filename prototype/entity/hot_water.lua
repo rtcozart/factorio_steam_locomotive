@@ -19,18 +19,3 @@ data:extend({{
 	fuel_acceleration_multiplier = 1.0,
 	fuel_top_speed_multiplier = 1.0
 }})
-
-data:extend({{
-    type = "recipe",
-    name = "fuckass",
-    enabled = true,
-    energy_required = 16.5,
-    normal = {
-        enabled = true,
-        ingredients = {{"wood", 1}},
-        result = "rtc:hot-water"
-    },
-    expensive = nil,
-    energy_required =  0.1,
-    show_amount_in_title = false
-}})

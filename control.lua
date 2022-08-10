@@ -85,19 +85,6 @@ function on_start()
     end
 end
 
---[[
-not used?
-function get_locomotive_by_key(key, obj)
-    for _, v in pairs(locomotives) do
-        if obj == v[key] then
-            return v
-        end
-    end
-    return nil
-end
-]]
-
-
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_built_entity, on_build)
 script.on_event(defines.events.on_robot_built_entity, on_build)
