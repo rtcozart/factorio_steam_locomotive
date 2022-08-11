@@ -59,8 +59,6 @@ end
 function map_fuel_to_steam(fuel)
 	for _, mapped in pairs(FUEL_MAP) do
 		if fuel.fuel_acceleration_multiplier >= mapped[1] then
-			game.print(fuel.fuel_acceleration_multiplier)
-			game.print(mapped[2])
 			return mapped[2]
 		end
 	end

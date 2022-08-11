@@ -27,7 +27,7 @@ local custom_properties = {
 		item = "rtc:steam-locomotive-item",
 		count = 1
 	},
-	weight = 3000,
+	weight = 2000,
 	energy_source = {
 		type = "burner",
 		emissions_per_minute = 10,

@@ -7,4 +7,19 @@ local function on_init()
 	--remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:cold-water"}})
 end
 
---TODO: prevent fluids from being picked up by player
+function on_inventory_changed(event)
+	local player = game.get_player(event.player_index)
+	if player and player.valid then
+		local inventory = player.get_main_inventory()
+		local forbidden_items = {"rtc:cold-water","rtc:hot-water","rtc:hot-water1","rtc:hot-water2","rtc:hot-water3"}
+		for _,name in pairs(forbidden_items) do
+			local item_count = inventory.get_item_count(name)
+			if item_count > 0 then
+				local removed_count = inventory.remove({name=name, count=item_count})
+				--game.print("Removed "..item_count.." of item "..name)
+			end
+		end
+	end
+end
+
+script.on_event(defines.events.on_player_main_inventory_changed, on_inventory_changed)
