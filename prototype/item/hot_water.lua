@@ -43,7 +43,7 @@ data:extend({{
 	name = "rtc:hot-water2",
 	fuel_value = "0.4MJ",
 	fuel_acceleration_multiplier = 1.8,
-	fuel_top_speed_multiplier = 1.15
+	fuel_top_speed_multiplier = 1.10
 }})
 
 data:extend({{
@@ -57,6 +57,6 @@ data:extend({{
 	flags = {"hidden","hide-from-fuel-tooltip"},
 	name = "rtc:hot-water3",
 	fuel_value = "0.4MJ",
-	fuel_acceleration_multiplier = 2.5,
-	fuel_top_speed_multiplier = 1.15
+	fuel_acceleration_multiplier = 2,
+	fuel_top_speed_multiplier = 1.10
 }})

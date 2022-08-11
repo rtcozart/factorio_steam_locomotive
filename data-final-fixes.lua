@@ -35,3 +35,7 @@ local diesel_technology = 	{
 }
 
 data:extend({diesel_technology})
+
+local tankApi = require "__fluidTrains__/api/data"
+
+tankApi.generateTank(3000)

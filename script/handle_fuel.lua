@@ -2,13 +2,12 @@ local public = {}
 
 local known_trains = {}
 
---TODO: make extendable?
-local FUEL_MAP = {}
-FUEL_MAP["coal"] = "rtc:hot-water"
-FUEL_MAP["wood"] = "rtc:hot-water"
-FUEL_MAP["solid-fuel"] = "rtc:hot-water1"
-FUEL_MAP["rocket-fuel"] = "rtc:hot-water2"
-FUEL_MAP["nuclear-fuel"] = "rtc:hot-water3"
+local FUEL_MAP = {
+	{2.0, "rtc:hot-water3"},
+	{1.8, "rtc:hot-water2"},
+	{1.2, "rtc:hot-water1"},
+	{0.0, "rtc:hot-water"}
+}
 
 function find_tender(locomotive)
 	--attempt to get from known trains first
@@ -57,21 +56,31 @@ function find_tender(locomotive)
     end
 end
 
---TODO: If a locomotive runs out of water, the tender will keep burning fuel
+function map_fuel_to_steam(fuel)
+	for _, mapped in pairs(FUEL_MAP) do
+		if fuel.fuel_acceleration_multiplier >= mapped[1] then
+			game.print(fuel.fuel_acceleration_multiplier)
+			game.print(mapped[2])
+			return mapped[2]
+		end
+	end
+end
+
 function public:consume_energy(v)
 	local tender = find_tender(v.locomotive)
 	local current_water_count = v.locomotive.burner.inventory.get_item_count()
+	local known_train = known_trains[v.locomotive.unit_number]
+	if not known_train and known_train.train.valid then return end
 	if current_water_count > 0 then
 		local new_water_type
-		if tender.burner.currently_burning then
-			new_water_type = FUEL_MAP[tender.burner.currently_burning.name]
-			if new_water_type == nil then
-				--modded fuels
-				--TODO: find better implementation
-				new_water_type = "rtc:hot-water"
-			end
+		if tender and tender.burner.currently_burning then
+			new_water_type = map_fuel_to_steam(tender.burner.currently_burning)
 		else
 			new_water_type = "rtc:cold-water"
+		end
+		--shitty hack to get fluid locomotives to work
+		if known_train.train.speed == 0 and new_water_type ~= "rtc:cold-water" then
+			new_water_type = "rtc:hot-water"
 		end
 		if new_water_type ~= (v.locomotive.burner.currently_burning and v.locomotive.burner.currently_burning.name) then
 			v.locomotive.burner.inventory.clear()
@@ -79,8 +88,7 @@ function public:consume_energy(v)
 			v.locomotive.burner.remaining_burning_fuel = 0
 		end
 
-		local cold_water_count = v.locomotive.burner.inventory.get_item_count("rtc:cold-water")
-		if cold_water_count > 0 then
+		if new_water_type == "rtc:cold-water" then
 			rendering.draw_sprite({
 				sprite = "rtc:sprite-cold",
 				target = v.locomotive,
@@ -94,8 +102,9 @@ function public:consume_energy(v)
 		end
 	elseif v.locomotive.burner.remaining_burning_fuel == 0 then
 		-- I don't think this will cause any errors...
-		local train = known_trains[v.locomotive.unit_number].train
-		train.manual_mode = true
+		if known_train and not known_train.train.manual_mode then
+			known_train.train.manual_mode = true
+		end
 	end
 end
 

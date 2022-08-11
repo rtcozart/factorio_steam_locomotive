@@ -17,7 +17,7 @@ function on_tick(event)
 		end
 	end
 
-	if event.tick % 60 == 0 then
+	if event.tick % 60 == 30 then
 		for i, v in pairs(locomotives) do
 			if is_locomotive_valid(i, v) then
 				FuelControl:consume_energy(v)

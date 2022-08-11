@@ -6,7 +6,7 @@ data:extend({{
 	icon_size = fluid.icon_size,
 	icon_mipmaps = fluid.icon_mipmaps,
 	icons = fluid.icons,
-	stack_size = 1500,
+	stack_size = 3000,
 	fuel_category = "rtc:water",
 	flags = {"hidden","hide-from-fuel-tooltip"},
 	name = "rtc:cold-water",
