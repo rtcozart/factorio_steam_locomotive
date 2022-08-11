@@ -51,6 +51,8 @@ local custom_properties = {
 		}
 	}
 }
+
+
 tender.working_sound = nil
 for k,v in pairs(custom_properties) do
 	tender[k] = v
@@ -59,5 +61,13 @@ end
 tender.front_light = nil
 tender.front_light_pictures = nil
 tender.darkness_to_render_light_animation = 2
+
+if settings.startup["rtc:steamtrain-disable"].value then
+	tender.type="cargo-wagon"
+	tender.max_power = nil
+	tender.weight=2000
+	tender.inventory_size = 40
+	tender.energy_source = nil
+end
 
 data:extend({tender})

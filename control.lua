@@ -3,6 +3,8 @@ local FluidControl = require("script/handle_fluid.lua")
 
 local locomotives = nil
 
+local fluid_disabled = settings.startup["rtc:steamtrain-disable"].value
+
 function on_tick(event)
 	--TODO: implement without a check every tick?
 	if not locomotives then
@@ -15,7 +17,7 @@ function on_tick(event)
 		end
 	end
 
-	if event.tick % 60 == 30 then
+	if not fluid_disabled and event.tick % 60 == 30 then
 		for i, v in pairs(locomotives) do
 			if is_locomotive_valid(i, v) then
 				FluidControl:update_fluid(v)

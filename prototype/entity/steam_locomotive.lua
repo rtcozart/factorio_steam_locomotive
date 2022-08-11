@@ -19,6 +19,12 @@ placement_entity.pictures = {
 	shift = util.by_pixel(0, -18)
 }
 
+local fuel_category = "rtc:water"
+
+if settings.startup["rtc:steamtrain-disable"].value then
+	fuel_category = "chemical"
+end
+
 local steam_locomotive = table.deepcopy(data.raw["locomotive"]["locomotive"])
 local custom_properties = {
 	name = "rtc:steam-locomotive",
@@ -34,7 +40,7 @@ local custom_properties = {
 		render_no_power_icon = true,
 		render_no_network_icon = false,
 		fuel_inventory_size = 1,
-		fuel_category = "rtc:water",
+		fuel_category = fuel_category,
 		smoke = {
 		  {
 			--duration = 1,

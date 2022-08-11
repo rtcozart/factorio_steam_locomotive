@@ -119,13 +119,15 @@ function public:update_fluid(v)
 end
 
 local function on_init()
-	remote.call("fluidTrains_hook", "addLocomotive", "rtc:steam-locomotive", 3000)
-	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
+	if not settings.startup["rtc:steamtrain-disable"].value then
+		remote.call("fluidTrains_hook", "addLocomotive", "rtc:steam-locomotive", 3000)
+		remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
 
-	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water3", temp = 600}})
-	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water2", temp = 400}})
-	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water1", temp = 200}})
-	--remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:cold-water"}})
+		remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water3", temp = 600}})
+		remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water2", temp = 400}})
+		remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water1", temp = 200}})
+		--remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:cold-water"}})
+	end
 end
 
 function on_inventory_changed(event)
@@ -143,11 +145,25 @@ function on_inventory_changed(event)
 	end
 end
 
---[[
 commands.add_command("fluid_dump", nil, function(command)
 	remote.call("fluidTrains_hook", "dumpConfig")
 end)
-]]
+
+commands.add_command("fuck", nil, function(command)
+	if settings.startup["rtc:steamtrain-disable"].value then
+		game.print("fuck")
+	end
+	if settings.startup["rtc:steamtrain-disable"].value == true then
+		game.print("you")
+	end
+
+	if not settings.startup["rtc:steamtrain-disable"].value then
+		game.print("shit")
+	end
+	if settings.startup["rtc:steamtrain-disable"].value == false then
+		game.print("ass")
+	end
+end)
 
 script.on_init(on_init)
 script.on_configuration_changed(on_init)
