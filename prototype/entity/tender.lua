@@ -16,8 +16,9 @@ local custom_properties = {
 		fuel_category = "chemical",
 		smoke = nil
 	},
-	icon = SPRITE_PATH.."tender/64x64.png",
+	icon = SPRITE_PATH.."icon/tender.png",
 	icon_size = 64,
+	icon_mipmaps = 4,
 	pictures = {
 		layers = {
 			{

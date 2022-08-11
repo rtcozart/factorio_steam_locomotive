@@ -86,8 +86,9 @@ local custom_properties = {
 		"player-creation",
 		"placeable-off-grid"
 	},
-	icon = SPRITE_PATH.."steam-locomotive/64x64.png",
+	icon = SPRITE_PATH.."icon/steam-locomotive.png",
 	icon_size = 64,
+	icon_mipmaps = 4,
 	pictures = {
 		layers = {
 			--base image

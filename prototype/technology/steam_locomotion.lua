@@ -3,8 +3,9 @@ data:extend({
 	{
 		type = "technology",
 		name = "rtc:steam-locomotion-technology",
-		icon = SPRITE_PATH.."steam-locomotive/512x512.png",
-		icon_size = 512,
+		icon = SPRITE_PATH.."technology/steam-locomotion.png",
+		icon_size = 256,
+		icon_mipmaps = 4,
 		effects = {
 			{
 				type = "unlock-recipe",

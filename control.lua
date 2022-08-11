@@ -1,7 +1,5 @@
-require("script/handle_fluid.lua")
-
 local WheelControl = require("script/handle_wheels.lua")
-local FuelControl = require("script/handle_fuel.lua")
+local FluidControl = require("script/handle_fluid.lua")
 
 local locomotives = nil
 
@@ -20,7 +18,7 @@ function on_tick(event)
 	if event.tick % 60 == 30 then
 		for i, v in pairs(locomotives) do
 			if is_locomotive_valid(i, v) then
-				FuelControl:consume_energy(v)
+				FluidControl:update_fluid(v)
 			end
 		end
 	end
