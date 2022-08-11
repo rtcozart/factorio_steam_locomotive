@@ -1,9 +1,10 @@
 local function on_init()
 	remote.call("fluidTrains_hook", "addLocomotive", "rtc:steam-locomotive", 3000)
+	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
+
 	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water3", temp = 600}})
 	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water2", temp = 400}})
 	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "steam", {{item = "rtc:hot-water1", temp = 200}})
-	remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
 	--remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:cold-water"}})
 end
 
@@ -22,4 +23,10 @@ function on_inventory_changed(event)
 	end
 end
 
+script.on_init(on_init)
+script.on_configuration_changed(on_init)
 script.on_event(defines.events.on_player_main_inventory_changed, on_inventory_changed)
+
+commands.add_command("fluid_dump", nil, function(command)
+	remote.call("fluidTrains_hook", "dumpConfig")
+end)

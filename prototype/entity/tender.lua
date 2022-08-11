@@ -55,4 +55,8 @@ for k,v in pairs(custom_properties) do
 	tender[k] = v
 end
 
+tender.front_light = nil
+tender.front_light_pictures = nil
+tender.darkness_to_render_light_animation = 2
+
 data:extend({tender})

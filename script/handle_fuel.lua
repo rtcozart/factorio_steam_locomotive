@@ -10,14 +10,6 @@ local FUEL_MAP = {
 }
 
 function find_tender(locomotive)
-	--attempt to get from known trains first
-	local candidate = known_trains[locomotive.unit_number]
-	if (candidate and candidate.train and candidate.train.valid and candidate.tender and candidate.tender.valid) then
-		return candidate.tender
-	else
-		known_trains[locomotive.unit_number] = nil
-	end
-
 	local function find(table, loco)
 		for i, v in pairs(table) do
 			if v.unit_number == loco.unit_number then
@@ -27,6 +19,37 @@ function find_tender(locomotive)
 		return false
 	end
 
+	local saved_train = get_known_train(locomotive)
+	if saved_train and saved_train.train and saved_train.train.valid then
+		local t = saved_train.train
+		for i, carriage in pairs(t.carriages) do
+			if carriage.unit_number and carriage.unit_number == locomotive.unit_number then
+				if find(t.locomotives["front_movers"], locomotive) then
+					local tender = t.carriages[i+1]
+					if tender and tender.prototype.name == "rtc:tender" and find(t.locomotives["front_movers"], tender) then
+						saved_train.tender = tender
+						return tender
+					end
+				else
+					local tender = t.carriages[i-1]
+					if tender and tender.prototype.name == "rtc:tender" and find(t.locomotives["back_movers"], tender) then
+						saved_train.tender = tender
+						return tender
+					end
+				end
+				return nil
+			end
+		end
+	end
+end
+
+function get_known_train(locomotive)
+	local candidate = known_trains[locomotive.unit_number]
+	if (candidate and candidate.train and candidate.train.valid) then
+		return candidate
+	else
+		known_trains[locomotive.unit_number] = nil
+	end
 	--TODO: More optimal method?
 	for _, surface in pairs(game.surfaces) do
 		for _, t in pairs(surface.get_trains()) do
@@ -34,26 +57,13 @@ function find_tender(locomotive)
 				if carriage.unit_number and carriage.unit_number == locomotive.unit_number then
 					local saved_train = {}
 					saved_train.train = t
-					if find(t.locomotives["front_movers"], locomotive) then
-						local tender = t.carriages[i+1]
-						if tender and tender.prototype.name == "rtc:tender" and find(t.locomotives["front_movers"], tender) then
-							saved_train.tender = tender
-							known_trains[locomotive.unit_number] = saved_train
-							return tender
-						end
-					else
-						local tender = t.carriages[i-1]
-						if tender and tender.prototype.name == "rtc:tender" and find(t.locomotives["back_movers"], tender) then
-							saved_train.tender = tender
-							known_trains[locomotive.unit_number] = saved_train
-							return tender
-						end
-					end
-					return nil
+					known_trains[locomotive.unit_number] = saved_train
+					return saved_train
 				end
 			end
 		end
     end
+    return nil
 end
 
 function map_fuel_to_steam(fuel)
@@ -67,8 +77,8 @@ end
 function public:consume_energy(v)
 	local tender = find_tender(v.locomotive)
 	local current_water_count = v.locomotive.burner.inventory.get_item_count()
-	local known_train = known_trains[v.locomotive.unit_number]
-	if not known_train and known_train.train.valid then return end
+	local known_train = get_known_train(v.locomotive)
+	if not (known_train and known_train.train and known_train.train.valid) then return end
 	if current_water_count > 0 then
 		local new_water_type
 		if tender and tender.burner.currently_burning then
@@ -80,7 +90,9 @@ function public:consume_energy(v)
 		if known_train.train.speed == 0 and new_water_type ~= "rtc:cold-water" then
 			new_water_type = "rtc:hot-water"
 		end
-		if new_water_type ~= (v.locomotive.burner.currently_burning and v.locomotive.burner.currently_burning.name) then
+		if new_water_type ~= (v.locomotive.burner.currently_burning and v.locomotive.burner.currently_burning.name)
+			and v.locomotive.burner.inventory.get_item_count(new_water_type) == 0 then
+			--set stack?
 			v.locomotive.burner.inventory.clear()
 			v.locomotive.burner.inventory.insert({name = new_water_type, count = current_water_count})
 			v.locomotive.burner.remaining_burning_fuel = 0
@@ -98,9 +110,9 @@ function public:consume_energy(v)
 				target_offset = {0, -0.6}
 			})
 		end
+		--prevent tender from wasting fuel when water is empty
 	elseif v.locomotive.burner.remaining_burning_fuel == 0 then
-		-- I don't think this will cause any errors...
-		if known_train and not known_train.train.manual_mode then
+		if not known_train.train.manual_mode then
 			known_train.train.manual_mode = true
 		end
 	end
