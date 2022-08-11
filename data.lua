@@ -18,6 +18,7 @@ require("prototype/recipe/tender")
 
 --sprite
 require("prototype/sprite/icon_cold")
+require("prototype/sprite/icon_no_water")
 
 --technology
 require("prototype/technology/steam_locomotion")

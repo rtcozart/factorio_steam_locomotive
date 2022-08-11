@@ -1,5 +1,5 @@
 if settings.startup["rtc:steamtrain-harder-diesel"].value then
-	local railway = data.raw.technology["railway"]
+	local railway = data.raw["technology"]["railway"]
 	for i, v in pairs(railway.effects) do
 		if v.type == "unlock-recipe" and v.recipe == "locomotive" then
 			table.remove(railway.effects, i)
@@ -29,10 +29,28 @@ if settings.startup["rtc:steamtrain-harder-diesel"].value then
 		order = "e-g"
 	}
 
-	--if settings.startup["bobmods-logistics-trains"].value == true then
-	--bob-railway-2
-	--bob-railway-3
-	--bob-railway-4?
+	local mods_to_update = {}
+	if settings.startup["bobmods-logistics-trains"].value then
+		table.insert(mods_to_update, data.raw["technology"]["bob-railway-2"])
+	end
+
+	function modify_technology(technology)
+		if not technology then return end
+		modify_technology(technology.normal)
+		modify_technology(technology.expensive)
+		if not technology.unit then return end
+		table.insert(technology.unit.ingredients, {"chemical-science-pack",1})
+		for _, prerequisite in pairs(technology.prerequisites) do
+			if prerequisite == "railway" then
+				table.insert(technology.prerequisites, "rtc:diesel-locomotion-technology")
+				break
+			end
+		end
+	end
+
+	for _, technology in pairs(mods_to_update) do
+		modify_technology(technology)
+	end
 
 	data:extend({diesel_technology})
 end

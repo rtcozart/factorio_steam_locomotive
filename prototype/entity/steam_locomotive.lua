@@ -34,10 +34,11 @@ local custom_properties = {
 		count = 1
 	},
 	weight = 2000,
+	connection_distance = 2.5,
 	energy_source = {
 		type = "burner",
 		emissions_per_minute = 10,
-		render_no_power_icon = true,
+		render_no_power_icon = settings.startup["rtc:steamtrain-disable"].value,
 		render_no_network_icon = false,
 		fuel_inventory_size = 1,
 		fuel_category = fuel_category,
