@@ -16,6 +16,7 @@ data:extend({{
 }})
 
 --extra variants to apply acceleration bonuses
+--could possibly reduce fuel_value to simulate faster steam consumption
 data:extend({{
 	type = "item",
 	icon = fluid.icon,

@@ -7,6 +7,8 @@ local FUEL_MAP = {
 	{0.0, "rtc:hot-water"}
 }
 
+local tender_fuel = {}
+
 function find_tender(locomotive)
 	local train = locomotive.train
 	if train and train.valid then
@@ -44,10 +46,11 @@ function public:update_fluid(v)
 		end
 		if new_water_type ~= (v.locomotive.burner.currently_burning and v.locomotive.burner.currently_burning.name)
 			and v.locomotive.burner.inventory.get_item_count(new_water_type) == 0 then
-			--set stack?
 			v.locomotive.burner.inventory.clear()
 			v.locomotive.burner.inventory.insert({name = new_water_type, count = current_water_count})
-			v.locomotive.burner.remaining_burning_fuel = 0
+			if v.locomotive.burner.currently_burning == "rtc:cold-water" then
+				v.locomotive.burner.remaining_burning_fuel = 0
+			end
 		end
 
 		if new_water_type == "rtc:cold-water" then
@@ -62,7 +65,6 @@ function public:update_fluid(v)
 				target_offset = {0, -0.6}
 			})
 		end
-		--prevent tender from wasting fuel when water is empty
 	elseif v.locomotive.burner.remaining_burning_fuel == 0 then
 			rendering.draw_sprite({
 				sprite = "rtc:sprite-no-water",
@@ -74,13 +76,39 @@ function public:update_fluid(v)
 				y_scale = 0.5,
 				target_offset = {0, -0.6}
 			})
-		if not train.manual_mode then
-			train.manual_mode = true
-		end
+			--prevents tender from wasting fuel when water is empty
+			if tender and tender.valid and tender_fuel[tender.unit_number] then
+				local saved = tender_fuel[tender.unit_number]
+				local current = get_tender_fuel(tender)
+				if saved.remaining_burning_fuel ~= current.remaining_burning_fuel then
+					tender.burner.remaining_burning_fuel = saved.remaining_burning_fuel
+					local item_diff = saved.fuel_count - current.fuel_count
+					--potentially exploitable? should be ok
+					if saved.currently_burning and item_diff == 1 then
+						tender.burner.inventory.insert({name = saved.currently_burning, count = item_diff})
+					end
+				end
+			end
+	end
+	if tender and tender.valid then
+		tender_fuel[tender.unit_number] = get_tender_fuel(tender)
 	end
 end
 
-local function on_init()
+function get_tender_fuel(tender)
+	local info = {
+		currently_burning = nil,
+		remaining_burning_fuel = tender.burner.remaining_burning_fuel,
+		fuel_count = 0
+	}
+	if tender.burner.currently_burning then
+		info.currently_burning = tender.burner.currently_burning.name
+		info.fuel_count = tender.burner.inventory.get_item_count(info.currently_burning)
+	end
+	return info
+end
+
+function on_init()
 	if not settings.startup["rtc:steamtrain-disable"].value then
 		remote.call("fluidTrains_hook", "addLocomotive", "rtc:steam-locomotive", 3000)
 		remote.call("fluidTrains_hook", "addFluid", "rtc:water", "water", {{item = "rtc:hot-water"}})
@@ -106,26 +134,6 @@ function on_inventory_changed(event)
 		end
 	end
 end
-
-commands.add_command("fluid_dump", nil, function(command)
-	remote.call("fluidTrains_hook", "dumpConfig")
-end)
-
-commands.add_command("fuck", nil, function(command)
-	if settings.startup["rtc:steamtrain-disable"].value then
-		game.print("fuck")
-	end
-	if settings.startup["rtc:steamtrain-disable"].value == true then
-		game.print("you")
-	end
-
-	if not settings.startup["rtc:steamtrain-disable"].value then
-		game.print("shit")
-	end
-	if settings.startup["rtc:steamtrain-disable"].value == false then
-		game.print("ass")
-	end
-end)
 
 script.on_init(on_init)
 script.on_configuration_changed(on_init)
