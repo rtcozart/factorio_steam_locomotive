@@ -5,20 +5,6 @@ custom_smoke.name = "rtc:train-smoke"
 custom_smoke.start_scale = 0.2
 custom_smoke.end_scale = 3
 
-local placement_entity = table.deepcopy(data.raw["locomotive"]["locomotive"])
-placement_entity.name = "rtc:steam-locomotive-placement-entity"
-placement_entity.wheels = nil
-placement_entity.pictures = {
-	direction_count = 64,
-	line_length = 8,
-	lines_per_file = 8,
-	width = 512,
-	height = 512,
-	filename = SPRITE_PATH.."steam-locomotive/placement_entity.gif",
-	scale = 0.45,
-	shift = util.by_pixel(0, -18)
-}
-
 local fuel_category = "rtc:water"
 
 if settings.startup["rtc:steamtrain-disable"].value then
@@ -188,5 +174,19 @@ end
 
 steam_locomotive.wheels = nil
 steam_locomotive.front_light_pictures = nil
+
+--used to show wheel graphics when placing locomotive
+local placement_entity = table.deepcopy(steam_locomotive)
+placement_entity.name = "rtc:steam-locomotive-placement-entity"
+placement_entity.pictures = {
+	direction_count = 64,
+	line_length = 8,
+	lines_per_file = 8,
+	width = 512,
+	height = 512,
+	filename = SPRITE_PATH.."steam-locomotive/placement_entity.gif",
+	scale = 0.45,
+	shift = util.by_pixel(0, -18)
+}
 
 data:extend({custom_smoke, steam_locomotive, placement_entity})
