@@ -44,12 +44,17 @@ function public:update_fluid(v)
 		if train.speed == 0 and new_water_type ~= "rtc:cold-water" then
 			new_water_type = "rtc:hot-water"
 		end
-		if new_water_type ~= (v.locomotive.burner.currently_burning and v.locomotive.burner.currently_burning.name)
-			and v.locomotive.burner.inventory.get_item_count(new_water_type) == 0 then
-			v.locomotive.burner.inventory.clear()
-			v.locomotive.burner.inventory.insert({name = new_water_type, count = current_water_count})
-			if v.locomotive.burner.currently_burning == "rtc:cold-water" then
-				v.locomotive.burner.remaining_burning_fuel = 0
+
+
+		if v.locomotive.burner.currently_burning then
+			local water_updated = new_water_type ~= v.locomotive.burner.currently_burning.name
+			local should_update_water = v.locomotive.burner.inventory.get_item_count(new_water_type) == 0 or v.locomotive.burner.currently_burning.name == "rtc:cold-water"
+			if water_updated and should_update_water then
+				v.locomotive.burner.inventory.clear()
+				v.locomotive.burner.inventory.insert({name = new_water_type, count = current_water_count})
+				if v.locomotive.burner.currently_burning.name == "rtc:cold-water" then
+					v.locomotive.burner.remaining_burning_fuel = 0
+				end
 			end
 		end
 
