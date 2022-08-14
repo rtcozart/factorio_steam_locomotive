@@ -12,6 +12,9 @@ end
 
 function public:update_wheel_position(locomotive, wheels)
 	if not locomotive or not locomotive.valid or not wheels or not wheels.valid then return end
+	if locomotive.speed == 0 and wheels.speed == 0 and wheels.orientation == locomotive.orientation then
+		return
+	end
 	wheels.orientation = locomotive.orientation
 	local offset = {x = 0, y = 0}
 	--when connected behind another engine, the position not accurate for some reason

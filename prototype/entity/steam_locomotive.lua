@@ -63,7 +63,7 @@ local custom_properties = {
 	working_sound = {
 		sound = {
 			filename = SOUND_PATH.."steam-engine-45bpm.ogg",
-			volume = 0.6
+			volume = 0.7
 		},
 		match_speed_to_activity = true,
 		idle_sound = {
