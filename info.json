@@ -1,9 +1,9 @@
 {
     "name": "steamtrain",
-    "version": "0.6.0",
+    "version": "0.9.0",
     "title": "Steam Locomotive",
     "author": "",
     "factorio_version": "1.1",
     "dependencies": ["base >= 1.1.0","fluidTrains >= 1.0.0"],
-    "description": ""
+    "description": "Adds a tender locomotive that requires water and fuel to function."
 }
