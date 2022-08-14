@@ -30,8 +30,11 @@ if settings.startup["rtc:steamtrain-harder-diesel"].value then
 	}
 
 	local mods_to_update = {}
-	if settings.startup["bobmods-logistics-trains"].value then
+	if mods["boblogistics"] and settings.startup["bobmods-logistics-trains"].value then
 		table.insert(mods_to_update, data.raw["technology"]["bob-railway-2"])
+	end
+	if mods["dieselTrains"] then
+		table.insert(mods_to_update, data.raw["technology"]["diesel-locomotive"])
 	end
 
 	function modify_technology(technology)
