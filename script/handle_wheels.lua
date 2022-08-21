@@ -17,7 +17,7 @@ function public:update_wheel_position(locomotive, wheels)
 	end
 	wheels.orientation = locomotive.orientation
 	local offset = {x = 0, y = 0}
-	--when connected behind another engine, the position not accurate for some reason
+	--when connected behind another rolling stock, the position not accurate for some reason
 	local in_front = locomotive.get_connected_rolling_stock(defines.rail_direction.front)
 	if in_front and in_front.valid then
 		local angle = math.pi*2*in_front.orientation

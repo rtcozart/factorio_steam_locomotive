@@ -31,6 +31,7 @@ function public:update_fluid(v)
 	local current_water_count = v.locomotive.burner.inventory.get_item_count()
 	local train = v.locomotive.train
 	if not (train and train.valid) then return end
+	v.no_water = current_water_count == 0
 	if current_water_count > 0 then
 		local new_water_type
 		if tender and tender.burner.currently_burning then
@@ -42,7 +43,6 @@ function public:update_fluid(v)
 		if train.speed == 0 and new_water_type ~= "rtc:cold-water" then
 			new_water_type = "rtc:hot-water"
 		end
-
 
 		if v.locomotive.burner.currently_burning then
 			local water_updated = new_water_type ~= v.locomotive.burner.currently_burning.name
@@ -56,44 +56,22 @@ function public:update_fluid(v)
 			end
 		end
 
-		if new_water_type == "rtc:cold-water" then
-			if not tender or tender.burner.inventory.get_item_count() == 0 then
-				rendering.draw_sprite({
-					sprite = "rtc:sprite-cold",
-					target = v.locomotive,
-					surface = v.locomotive.surface,
-					render_layer = "entity-info-icon",
-					time_to_live = 30,
-					x_scale = 0.5,
-					y_scale = 0.5,
-					target_offset = {0, -0.6}
-				})
-			end
-		end
+		local tender_has_fuel = tender and tender.valid and (tender.burner.remaining_burning_fuel > 0 or tender.burner.inventory.get_item_count() > 0)
+		v.is_cold = new_water_type == "rtc:cold-water" and not tender_has_fuel
 	elseif v.locomotive.burner.remaining_burning_fuel == 0 then
-			rendering.draw_sprite({
-				sprite = "rtc:sprite-no-water",
-				target = v.locomotive,
-				surface = v.locomotive.surface,
-				render_layer = "entity-info-icon",
-				time_to_live = 30,
-				x_scale = 0.5,
-				y_scale = 0.5,
-				target_offset = {0, -0.6}
-			})
-			--prevents tender from wasting fuel when water is empty
-			if tender and tender.valid and global.tender_fuel[tender.unit_number] then
-				local saved = global.tender_fuel[tender.unit_number]
-				local current = get_tender_fuel(tender)
-				if saved.remaining_burning_fuel ~= current.remaining_burning_fuel then
-					tender.burner.remaining_burning_fuel = saved.remaining_burning_fuel
-					local item_diff = saved.fuel_count - current.fuel_count
-					--potentially exploitable? should be ok
-					if saved.currently_burning and item_diff == 1 then
-						tender.burner.inventory.insert({name = saved.currently_burning, count = item_diff})
-					end
+		--prevents tender from wasting fuel when water is empty
+		if tender and tender.valid and global.tender_fuel[tender.unit_number] then
+			local saved = global.tender_fuel[tender.unit_number]
+			local current = get_tender_fuel(tender)
+			if saved.remaining_burning_fuel < current.remaining_burning_fuel then
+				tender.burner.remaining_burning_fuel = saved.remaining_burning_fuel
+				local item_diff = saved.fuel_count - current.fuel_count
+				--potentially exploitable? should be ok
+				if saved.currently_burning and item_diff == 1 then
+					tender.burner.inventory.insert({name = saved.currently_burning, count = item_diff})
 				end
 			end
+		end
 	end
 	if tender and tender.valid then
 		global.tender_fuel[tender.unit_number] = get_tender_fuel(tender)

@@ -3,20 +3,52 @@ local FluidControl = require("script/handle_fluid.lua")
 
 local fluid_disabled = settings.startup["rtc:steamtrain-disable"].value
 
+local WHEEL_UPDATE_TICK = 2
+local FLUID_UPDATE_TICK = 30
+
 function on_tick(event)
-	for i, v in pairs(global.locomotives) do
+	for i = 1 + event.tick % WHEEL_UPDATE_TICK, #global.locomotives, WHEEL_UPDATE_TICK do
+		local v = global.locomotives[i]
 		if is_locomotive_valid(i, v) then
 			WheelControl:update_wheel_position(v.locomotive, v.wheels)
 		end
 	end
 
-	--TODO: call on nth_tick event instead? will that improve performance at all?
-	--this timing is necessary for custom fuel icons to render
-	--if I want to change up the timing, I'll need to split that into a separate event
-	if not fluid_disabled and event.tick % 60 == 30 then
+	if not fluid_disabled then
+		for i = 1 + event.tick % FLUID_UPDATE_TICK, #global.locomotives, FLUID_UPDATE_TICK do
+			local locomotive = global.locomotives[i]
+			if is_locomotive_valid(i, locomotive) then
+				FluidControl:update_fluid(locomotive)
+			end
+		end
+	end
+
+	if event.tick % 60 == 30 then
 		for i, v in pairs(global.locomotives) do
-			if is_locomotive_valid(i, v) then
-				FluidControl:update_fluid(v)
+			if v.locomotive and v.locomotive.valid then
+				if v.no_water then
+					rendering.draw_sprite({
+						sprite = "rtc:sprite-no-water",
+						target = v.locomotive,
+						surface = v.locomotive.surface,
+						render_layer = "entity-info-icon",
+						time_to_live = 30,
+						x_scale = 0.5,
+						y_scale = 0.5,
+						target_offset = {0, -0.6}
+					})
+				elseif v.is_cold then
+					rendering.draw_sprite({
+						sprite = "rtc:sprite-cold",
+						target = v.locomotive,
+						surface = v.locomotive.surface,
+						render_layer = "entity-info-icon",
+						time_to_live = 30,
+						x_scale = 0.5,
+						y_scale = 0.5,
+						target_offset = {0, -0.6}
+					})
+				end
 			end
 		end
 	end
@@ -51,7 +83,9 @@ function on_build(event)
 		local wheels = WheelControl:apply_wheels(locomotive)
 		table.insert(global.locomotives, {
 			locomotive = locomotive,
-			wheels = wheels
+			wheels = wheels,
+			is_cold = true,
+			no_water = true
 		})
 		-- hack to get fluid trains to see the created entity
 		locomotive.train.manual_mode = false
@@ -59,8 +93,8 @@ function on_build(event)
 	end
 end
 
-function on_load()
 --[[
+function on_load()
 	for _, surface in pairs(game.surfaces) do
 		for _, v in pairs(surface.find_entities_filtered({name={"rtc:steam-wheels","rtc:steam-locomotive-placement-entity"}})) do
 			v.destroy()
@@ -73,8 +107,8 @@ function on_load()
 			})
 		end
 	end
-	]]
 end
+]]
 
 function on_init()
 	if not global then global = {} end
@@ -97,7 +131,6 @@ end)
 
 script.on_configuration_changed(on_init)
 script.on_init(on_init)
-script.on_load(on_load)
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_built_entity, on_build)
 script.on_event(defines.events.on_robot_built_entity, on_build)
