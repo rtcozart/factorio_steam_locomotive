@@ -63,13 +63,15 @@ function public:update_fluid(v)
 		if tender and tender.valid and global.tender_fuel[tender.unit_number] then
 			local saved = global.tender_fuel[tender.unit_number]
 			local current = get_tender_fuel(tender)
-			if saved.remaining_burning_fuel < current.remaining_burning_fuel then
-				tender.burner.remaining_burning_fuel = saved.remaining_burning_fuel
-				local item_diff = saved.fuel_count - current.fuel_count
-				--potentially exploitable? should be ok
-				if saved.currently_burning and item_diff == 1 then
-					tender.burner.inventory.insert({name = saved.currently_burning, count = item_diff})
+			if saved.remaining_burning_fuel ~= current.remaining_burning_fuel then
+				if saved.remaining_burning_fuel < current.remaining_burning_fuel then
+					local item_diff = saved.fuel_count - current.fuel_count
+					--potentially exploitable? should be ok
+					if saved.currently_burning and item_diff == 1 then
+						tender.burner.inventory.insert({name = saved.currently_burning, count = 1})
+					end
 				end
+				tender.burner.remaining_burning_fuel = saved.remaining_burning_fuel
 			end
 		end
 	end
