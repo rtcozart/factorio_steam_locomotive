@@ -16,15 +16,12 @@ function public:update_wheel_position(locomotive, wheels)
 		return
 	end
 	wheels.orientation = locomotive.orientation
-	local offset = {x = 0, y = 0}
-	--when connected behind another rolling stock, the position not accurate for some reason
-	local in_front = locomotive.get_connected_rolling_stock(defines.rail_direction.front)
-	if in_front and in_front.valid then
-		local angle = math.pi*2*in_front.orientation
-		offset = { x = math.sin(angle) * math.cos(angle) * -0.5, y = 0 }
-	end
+	local offset = {x = 0, y = 0.5}
+	local b = locomotive.selection_box
+	local bx = (b.left_top.x + b.right_bottom.x) * 0.5
+	local by = (b.left_top.y + b.right_bottom.y) * 0.5
 	wheels.speed = locomotive.speed
-	wheels.teleport({x = locomotive.position.x + offset.x, y = locomotive.position.y + offset.y})
+	wheels.teleport({x = bx + offset.x, y = by + offset.y})
 end
 
 return public
