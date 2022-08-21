@@ -21,33 +21,33 @@ function on_tick(event)
 				FluidControl:update_fluid(locomotive)
 			end
 		end
-	end
 
-	if event.tick % 60 == 30 then
-		for i, v in pairs(global.locomotives) do
-			if v.locomotive and v.locomotive.valid then
-				if v.no_water then
-					rendering.draw_sprite({
-						sprite = "rtc:sprite-no-water",
-						target = v.locomotive,
-						surface = v.locomotive.surface,
-						render_layer = "entity-info-icon",
-						time_to_live = 30,
-						x_scale = 0.5,
-						y_scale = 0.5,
-						target_offset = {0, -0.6}
-					})
-				elseif v.is_cold then
-					rendering.draw_sprite({
-						sprite = "rtc:sprite-cold",
-						target = v.locomotive,
-						surface = v.locomotive.surface,
-						render_layer = "entity-info-icon",
-						time_to_live = 30,
-						x_scale = 0.5,
-						y_scale = 0.5,
-						target_offset = {0, -0.6}
-					})
+		if event.tick % 60 == 30 then
+			for i, v in pairs(global.locomotives) do
+				if v.locomotive and v.locomotive.valid then
+					if v.no_water then
+						rendering.draw_sprite({
+							sprite = "rtc:sprite-no-water",
+							target = v.locomotive,
+							surface = v.locomotive.surface,
+							render_layer = "entity-info-icon",
+							time_to_live = 30,
+							x_scale = 0.5,
+							y_scale = 0.5,
+							target_offset = {0, -0.6}
+						})
+					elseif v.is_cold then
+						rendering.draw_sprite({
+							sprite = "rtc:sprite-cold",
+							target = v.locomotive,
+							surface = v.locomotive.surface,
+							render_layer = "entity-info-icon",
+							time_to_live = 30,
+							x_scale = 0.5,
+							y_scale = 0.5,
+							target_offset = {0, -0.6}
+						})
+					end
 				end
 			end
 		end
