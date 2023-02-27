@@ -22,7 +22,7 @@ local custom_properties = {
 		count = 1
 	},
 	weight = 2000,
-	connection_distance = 2.5,
+	connection_distance = 3,
 	energy_source = {
 		type = "burner",
 		emissions_per_minute = 10,
