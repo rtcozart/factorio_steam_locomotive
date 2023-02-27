@@ -6,9 +6,11 @@ custom_smoke.start_scale = 0.2
 custom_smoke.end_scale = 3
 
 local fuel_category = "rtc:water"
+local fuel_inventory_size = 1
 
 if settings.startup["rtc:steamtrain-disable"].value then
 	fuel_category = "chemical"
+	fuel_inventory_size = 3
 end
 
 local steam_locomotive = table.deepcopy(data.raw["locomotive"]["locomotive"])
@@ -26,7 +28,7 @@ local custom_properties = {
 		emissions_per_minute = 10,
 		render_no_power_icon = settings.startup["rtc:steamtrain-disable"].value,
 		render_no_network_icon = false,
-		fuel_inventory_size = 1,
+		fuel_inventory_size = fuel_inventory_size,
 		fuel_category = fuel_category,
 		smoke = {
 		  {

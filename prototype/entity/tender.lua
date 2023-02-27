@@ -49,6 +49,10 @@ local custom_properties = {
 				shift = util.by_pixel(10, -20)
 			}
 		}
+	},
+	minable = {
+		mining_time = 1,
+		result = "rtc:tender-item"
 	}
 }
 
