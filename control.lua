@@ -68,7 +68,11 @@ end
 
 function on_build(event)
 	if (event.created_entity.name == 'rtc:steam-locomotive-placement-entity') then
-		local player = game.get_player(event.player_index)
+		local force = game.forces.neutral
+		if (event.player_index) then
+			local player = game.get_player(event.player_index)
+			force = player.force
+		end
 		local position = event.created_entity.position
 		local orientation = event.created_entity.orientation
 		local surface = event.created_entity.surface
@@ -77,7 +81,7 @@ function on_build(event)
 			name = "rtc:steam-locomotive",
 			position = position,
 			orientation = orientation,
-			force = player.force or game.forces.neutral,
+			force = force,
 			raise_script_built = true
 		})
 		local wheels = WheelControl:apply_wheels(locomotive)
