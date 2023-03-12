@@ -71,6 +71,9 @@ function is_locomotive_valid(i, v)
 end
 
 function on_build(event)
+	if (not event.created_entity or not event.created_entity.valid) then
+		return
+	end
 	if (event.created_entity.name == 'rtc:steam-locomotive-placement-entity') then
 		local force = game.forces.neutral
 		if (event.player_index) then
@@ -98,9 +101,8 @@ function on_build(event)
 		-- hack to get fluid trains to see the created entity
 		locomotive.train.manual_mode = false
 		locomotive.train.manual_mode = true
-	end
-	--called when bot creates entity via undo
-	if (event.created_entity.name == 'rtc:steam-locomotive') then
+
+	elseif (event.created_entity.name == 'rtc:steam-locomotive') then
 		local locomotive = event.created_entity;
 		local wheels = WheelControl:apply_wheels(locomotive)
 		table.insert(global.locomotives, {
