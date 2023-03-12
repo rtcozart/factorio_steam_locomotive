@@ -55,6 +55,10 @@ function on_tick(event)
 end
 
 function is_locomotive_valid(i, v)
+	if not v then
+		table.remove(global.locomotives, i)
+		return;
+	end
 	if not v.locomotive or not v.locomotive.valid then
 		table.remove(global.locomotives, i)
 		if v.wheels then
@@ -94,6 +98,17 @@ function on_build(event)
 		-- hack to get fluid trains to see the created entity
 		locomotive.train.manual_mode = false
 		locomotive.train.manual_mode = true
+	end
+	--called when bot creates entity via undo
+	if (event.created_entity.name == 'rtc:steam-locomotive') then
+		local locomotive = event.created_entity;
+		local wheels = WheelControl:apply_wheels(locomotive)
+		table.insert(global.locomotives, {
+			locomotive = locomotive,
+			wheels = wheels,
+			is_cold = true,
+			no_water = true
+		})
 	end
 end
 
