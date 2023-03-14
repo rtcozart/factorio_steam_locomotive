@@ -80,6 +80,9 @@ function on_build(event)
 			local player = game.get_player(event.player_index)
 			force = player.force
 		end
+		if (event.robot) then
+			force = event.robot.force
+		end
 		local position = event.created_entity.position
 		local orientation = event.created_entity.orientation
 		local surface = event.created_entity.surface
