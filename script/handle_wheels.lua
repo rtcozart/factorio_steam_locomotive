@@ -21,7 +21,7 @@ function public:update_wheel_position(locomotive, wheels)
 	local bx = (b.left_top.x + b.right_bottom.x) * 0.5
 	local by = (b.left_top.y + b.right_bottom.y) * 0.5
 	wheels.speed = locomotive.speed
-	wheels.teleport({x = bx + offset.x, y = by + offset.y})
+	wheels.teleport({x = bx + offset.x, y = by + offset.y}, locomotive.surface)
 end
 
 return public

@@ -70,6 +70,16 @@ function is_locomotive_valid(i, v)
 	end
 end
 
+function addToGlobal(locomotive, is_cold, no_water)
+	local wheels = WheelControl:apply_wheels(locomotive)
+	table.insert(global.locomotives, {
+		locomotive = locomotive,
+		wheels = wheels,
+		is_cold = is_cold,
+		no_water = no_water
+	})
+end
+
 function on_build(event)
 	if (not event.created_entity or not event.created_entity.valid) then
 		return
@@ -92,29 +102,26 @@ function on_build(event)
 			position = position,
 			orientation = orientation,
 			force = force,
-			raise_script_built = true
+			raise_script_built = false
 		})
-		local wheels = WheelControl:apply_wheels(locomotive)
-		table.insert(global.locomotives, {
-			locomotive = locomotive,
-			wheels = wheels,
-			is_cold = true,
-			no_water = true
-		})
+		addToGlobal(locomotive, true, true)
 		-- hack to get fluid trains to see the created entity
 		locomotive.train.manual_mode = false
 		locomotive.train.manual_mode = true
-
 	elseif (event.created_entity.name == 'rtc:steam-locomotive') then
-		local locomotive = event.created_entity;
-		local wheels = WheelControl:apply_wheels(locomotive)
-		table.insert(global.locomotives, {
-			locomotive = locomotive,
-			wheels = wheels,
-			is_cold = true,
-			no_water = true
-		})
+		addToGlobal(event.created_entity, true, true)
 	end
+end
+
+--for compatibility with mods like space exploration
+function on_script_built(event)
+	local entity = event.entity
+	if not entity then return end
+	if entity.name ~= 'rtc:steam-locomotive' then return end
+	for i, v in pairs(global.locomotives) do
+		if (v.locomotive == entity) then game.print("found it") return end
+	end
+	addToGlobal(entity, false, false)
 end
 
 --[[
@@ -158,3 +165,4 @@ script.on_init(on_init)
 script.on_event(defines.events.on_tick, on_tick)
 script.on_event(defines.events.on_built_entity, on_build)
 script.on_event(defines.events.on_robot_built_entity, on_build)
+script.on_event(defines.events.script_raised_built, on_script_built)
