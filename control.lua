@@ -118,9 +118,6 @@ function on_script_built(event)
 	local entity = event.entity
 	if not entity then return end
 	if entity.name ~= 'rtc:steam-locomotive' then return end
-	for i, v in pairs(global.locomotives) do
-		if (v.locomotive == entity) then game.print("found it") return end
-	end
 	addToGlobal(entity, false, false)
 end
 
